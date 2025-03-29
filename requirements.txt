@@ -1,4 +1,4 @@
-azure_storage==0.37.0
+azure-cosmos==4.9.0
 folium==0.19.5
 fuzzywuzzy==0.18.0
 pandas==2.2.3
