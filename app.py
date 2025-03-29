@@ -81,7 +81,7 @@ if st.sidebar.button("Login"):
         st.sidebar.error("Invalid username or password!")
 
 if st.session_state.get("logged_in"):
-    option = st.sidebar.selectbox("Select Visualization Type", ["Point Map", "Pin Map", "Cattle Count","Vaccination", "Cattle Image Gallery"])
+    option = st.sidebar.selectbox("Select Visualization Type", ["Point Map", "Pin Map", "Cattle Count","Vaccination"])
 
     # Initializing counters and farmers dictionary
     farmers_dict = {}
@@ -337,72 +337,7 @@ if st.session_state.get("logged_in"):
             st.warning(f"No cattle found vaccinated for {vaccine}.")
 
             
-    # --- Cattle Image Gallery Images ---
-    elif option == "Cattle Image Gallery":
-        st.subheader("Cattle Image Gallery")
 
-        # Assuming `items` is the list containing cattle data
-        if items:
-            for cattle in items:
-                # First row: Display Cattle Details (Expanded Information)
-                details_cols = st.columns(2)  # 2 columns for displaying details side by side
-
-                with details_cols[0]:
-                    st.write(f"**Farmer Name**: {cattle['farmer_name']}")
-                    st.write(f"**Farmer Mobile Number**: {cattle['mobile_number']}")
-                    st.write(f"**Farmer ID**: {cattle['farmer_id']}")
-                    st.write(f"**Cattle ear tag ID**: {cattle['ear_tag_id']}")
-                    st.write(f"**Breed Type**: {', '.join(cattle['breed_type'])}")
-                    st.write(f"**Vaccinations**: {', '.join(cattle['vaccinations'])}")
-                    st.write(f"**Medical Treatments**: {', '.join(cattle['medical_treatments'])}")
-                    st.write(f"**Behavioral Observations**: {', '.join(cattle['behaviour'])}")
-                    st.write(f"**Physiological Signs**: {', '.join(cattle['physiological'])}")
-                    st.write(f"**Location**: {cattle['village']}, {cattle['mandal']}, {cattle['district']}")
-
-                with details_cols[1]:
-                    st.write(f"**Gender**: {cattle['gender']}")
-                    st.write(f"**Age**: {cattle['age']} years")
-                    st.write(f"**Number of Pregnancies**: {cattle['number_of_pregnancies']}")
-                    st.write(f"**Pregnancy Status**: {cattle['pregnancy']}")
-                    st.write(f"**Estrous Last Cycle**: {cattle['estrous_last_cycle']}")
-                    st.write(f"**Cycle Range**: {cattle['range']}")
-                    st.write(f"**Temperature Observation**: {cattle['temperature_observation']}")
-                    st.write(f"**Rumination Cycle**: {cattle['rumination_cycle']}")
-                    st.write(f"**Rate of Chews**: {cattle['rate_chews']}")
-                    st.write(f"**Entered Time**: {cattle['entered_time']}")
-
-                # Second row: Display Cattle Images
-                image_cols = st.columns(4)  # 4 columns for displaying images
-
-                with image_cols[0]:
-                    if cattle.get('photo_backb'):
-                        st.image(cattle['photo_backb'], caption="Back Image", use_container_width=True)
-                    else:
-                        st.write("**Back Image Missing**")
-
-                with image_cols[1]:
-                    if cattle.get('photo_frontb'):
-                        st.image(cattle['photo_frontb'], caption="Front Image", use_container_width=True)
-                    else:
-                        st.write("**Front Image Missing**")
-
-                with image_cols[2]:
-                    if cattle.get('photo_leftb'):
-                        st.image(cattle['photo_leftb'], caption="Left Image", use_container_width=True)
-                    else:
-                        st.write("**Left Image Missing**")
-
-                with image_cols[3]:
-                    if cattle.get('photo_rightb'):
-                        st.image(cattle['photo_rightb'], caption="Right Image", use_container_width=True)
-                    else:
-                        st.write("**Right Image Missing**")
-
-                # Separator between each cattle for readability
-                st.markdown("---")
-        else:
-            st.warning("No cattle data available!")
-    
 
 else:
     # Display message to users before login
