@@ -264,7 +264,7 @@ if st.session_state.get("logged_in"):
     
     elif option == "Vaccination":
         st.subheader("Vaccination Heat Map")
-        vaccine = st.selectbox("Select Cattle Type", ["BQ", "FMD", "Brucellosis", "LSD", "Thellorosis", "Others"], key='vaccine')
+        vaccine = st.selectbox("Select Vaccination", ["BQ", "FMD", "Brucellosis", "LSD", "Thellorosis", "Others"], key='vaccine')
         filtered_data = [item for item in items if vaccine in item["vaccinations"]]  # Filter cattle by selected vaccine
 
         if filtered_data:
