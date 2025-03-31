@@ -8,7 +8,7 @@ from fuzzywuzzy import process
 from collections import defaultdict
 
 
-# --- Cosmos DB Configuration ---
+# # --- Cosmos DB Configuration ---
 import streamlit as st
 
 PRIMARY_KEY = st.secrets["PRIMARY_KEY"]
@@ -16,14 +16,23 @@ PRIMARY_KEY = st.secrets["PRIMARY_KEY"]
 COSMOS_URL = st.secrets["COSMOS_URL"]
 DATABASE_NAME = st.secrets["DATABASE_NAME"]
 CONTAINER_NAME = st.secrets["CONTAINER_NAME"]
+USER_CONTAINER_NAME = st.secrets["USER_CONTAINER_NAME"]
+
+
 
 client = CosmosClient(COSMOS_URL, credential=PRIMARY_KEY)
 database = client.get_database_client(DATABASE_NAME)
 container = database.get_container_client(CONTAINER_NAME)
+user_container = database.get_container_client(USER_CONTAINER_NAME)
+
 
 # Fetch data from Cosmos DB
 query = "SELECT * FROM c"
 items = list(container.query_items(query=query, enable_cross_partition_query=True))
+
+user_query = "SELECT * FROM c"
+user_items = list(user_container.query_items(query=user_query, enable_cross_partition_query=True))
+
 
 # Function to remove trailing whitespace in dictionary keys and array values
 def trim_trailing_spaces(data):
@@ -66,9 +75,10 @@ st.sidebar.title("Login")
 USER_CREDENTIALS = {}
 
 # Generate credentials dynamically from veta00 to veta25
-for i in range(26):
-    user_id = f"veta{i:02d}"  # Format numbers with leading zeros, e.g., veta00, veta01, etc.
-    USER_CREDENTIALS[user_id] = user_id
+for i in user_items:
+    user_id = i['cid']  # Format numbers with leading zeros, e.g., veta00, veta01, etc.
+    password = i['password']
+    USER_CREDENTIALS[user_id] = password
 
 username = st.sidebar.text_input("Username")
 password = st.sidebar.text_input("Password", type="password")
