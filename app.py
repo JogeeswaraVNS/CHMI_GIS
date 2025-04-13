@@ -8,6 +8,7 @@ from fuzzywuzzy import process
 from collections import defaultdict
 
 
+
 # # --- Cosmos DB Configuration ---
 import streamlit as st
 
@@ -100,7 +101,12 @@ if st.session_state.get("logged_in"):
 
     # Populate farmers_dict with counts and calculate total cows and bulls
     for item in items:
-        farmer_name = item["farmer_name"].strip()
+        if "farmer_name" in item:
+            farmer_name = item["farmer_name"].strip()
+        elif "owner_name" in item:
+            farmer_name = item["owner_name"].strip()
+        else:
+            farmer_name = "Not found"
         if farmer_name not in farmers_dict:
             farmers_dict[farmer_name] = {"cows": 0, "bulls": 0}
 
@@ -143,12 +149,14 @@ if st.session_state.get("logged_in"):
 
             # Iterate and create individual circle markers with color coding
             for loc in location_data:
-                lat, lon = float(loc["latitude"]), float(loc["longitude"])
+                lat = float(loc.get("latitude", 0))
+                lon = float(loc.get("longitude", 0))
+                
                 if 15.8 <= lat <= 19.9 and 77.0 <= lon <= 81.0:  # Telangana bounds
-                    popup_content = (f"<b>District:</b> {loc['district']}<br>"
-                                     f"<b>Mandal:</b> {loc['mandal']}<br>"
-                                     f"<b>Village:</b> {loc['village']}<br><br>"
-                                     f"<img src='{loc['photo_frontb']}' width='100%'><br>")
+                    popup_content = (f"<b>District:</b> {loc.get("district", "Unknown")}<br>"
+                                     f"<b>Mandal:</b> {loc.get("mandal", "Unknown")}<br>"
+                                     f"<b>Village:</b> {loc.get("village", "Unknown")}<br><br>"
+                                     f"<img src='{loc.get("photo_frontb", None)}' width='100%'><br>")
 
                     # Assign a unique color for the point
                     if (lat, lon) not in st.session_state.circle_color_map:
@@ -187,14 +195,16 @@ if st.session_state.get("logged_in"):
             bounds, color_index = [], 0
 
             for loc in location_data:
-                lat, lon = float(loc["latitude"]), float(loc["longitude"])
+                lat = float(loc.get("latitude", 0))
+                lon = float(loc.get("longitude", 0))
                 if 15.8 <= lat <= 19.9 and 77.0 <= lon <= 81.0:  # Telangana bounds
                     farmer_name = loc.get("farmer_name", "Unknown Farmer")
                     popup_content = (f"<b>Farmer Name:</b> {farmer_name}<br>"
-                                     f"<b>Ear TagID:</b> {loc['ear_tag_id']}<br>"
-                                     f"<b>Breed Type:</b> {loc['breed_type'][0]}<br>"
-                                     f"<b>Age:</b> {loc['age']} <b>Gender:</b> {loc['gender']}<br><br>"
-                                     f"<img src='{loc['photo_frontb']}' width='100%'><br>")
+                                    f"<b>Ear TagID:</b> {loc.get('ear_tag_id', 'Unknown')}<br>"
+                                    f"<b>Breed Type:</b> {loc.get('breed_type', ['Unknown'])[0]}<br>"
+                                    f"<b>Age:</b> {loc.get('age', 'Unknown')} <b>Gender:</b> {loc.get('gender', 'Unknown')}<br><br>"
+                                    f"<img src='{loc.get('photo_frontb', '')}' width='100%'><br>")
+
 
                     # Assign color if not already mapped
                     if (lat, lon) not in st.session_state.circle_color_map:
