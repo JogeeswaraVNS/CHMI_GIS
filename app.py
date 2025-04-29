@@ -201,7 +201,7 @@ if st.session_state.get("logged_in"):
                     farmer_name = loc.get("farmer_name", "Unknown Farmer")
                     popup_content = (f"<b>Farmer Name:</b> {farmer_name}<br>"
                                     f"<b>Ear TagID:</b> {loc.get('ear_tag_id', 'Unknown')}<br>"
-                                    f"<b>Breed Type:</b> {loc.get('breed_type', ['Unknown'])[0]}<br>"
+                                    f"<b>Breed Type:</b> {loc.get('breed_type', ['Unknown'])[0] if isinstance(loc.get('breed_type', 'Unknown'), list) else loc.get('breed_type', 'Unknown')}<br>"
                                     f"<b>Age:</b> {loc.get('age', 'Unknown')} <b>Gender:</b> {loc.get('gender', 'Unknown')}<br><br>"
                                     f"<img src='{loc.get('photo_frontb', '')}' width='100%'><br>")
 
