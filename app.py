@@ -20,7 +20,6 @@ CONTAINER_NAME = st.secrets["CONTAINER_NAME"]
 USER_CONTAINER_NAME = st.secrets["USER_CONTAINER_NAME"]
 
 
-
 client = CosmosClient(COSMOS_URL, credential=PRIMARY_KEY)
 database = client.get_database_client(DATABASE_NAME)
 container = database.get_container_client(CONTAINER_NAME)
@@ -238,9 +237,16 @@ if st.session_state.get("logged_in"):
 
             # Clean the 'mandal' column by removing leading and trailing spaces using str.strip()
             df['mandal'] = df['mandal'].str.strip()
+            mandal_cleaned = []
+            for i in df['mandal']:
+                if pd.notna(i):
+                    mandal_cleaned.append(fuzzy_match(i))
+                else:
+                    mandal_cleaned.append('N/A')  # Replace NaN/None with string 'nan'
 
-            # Apply fuzzy matching to clean the 'mandal' names
-            df['mandal'] = df['mandal'].apply(fuzzy_match)
+            df['mandal'] = mandal_cleaned
+
+            # df['mandal'] = df['mandal'].apply(lambda x: fuzzy_match(x) if pd.notna(x) else x)
 
             # Group by the cleaned 'mandal' column and count entries (cattle)
             cattle_count_by_mandal = df.groupby('mandal').size().reset_index(name='Cattle Count')
